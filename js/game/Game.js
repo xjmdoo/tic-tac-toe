@@ -11,6 +11,7 @@ export default class Game {
         this._addEventListeners();
         this._animateIn();
         this._isGameInactive = false;
+        this._currentPlayer = Field.TYPE.X;
 
         this._showPopup = this._showPopup.bind(this);
         this._hidePopup = this._hidePopup.bind(this);
@@ -55,7 +56,7 @@ export default class Game {
         let self = this;
         $('.ttt__field-inner').click(function() {
             const index = $(this).attr('data-index');
-            if(self.state.board[index].type === Field.TYPE.EMPTY) {
+            if(self.state.board[index].type === Field.TYPE.EMPTY && self._currentPlayer === Field.TYPE.X) {
                 self.movePlayer(index);
             }
         });
@@ -66,6 +67,7 @@ export default class Game {
                 $('.ttt__field-inner svg').removeClass('active');
                 self.state.resetBoard();
                 self._isGameInactive = false;
+                self._currentPlayer = Field.TYPE.X;
                 $(this).fadeIn(300);
             });
         });
@@ -104,6 +106,7 @@ export default class Game {
         if(this._isGameInactive) return;
         this._updateUIMove(Field.TYPE.X, index);
         this.state.move(Field.TYPE.X, index);
+        this._currentPlayer = Field.TYPE.O;
 
         this._updateLocalStorage();
 
@@ -130,6 +133,7 @@ export default class Game {
             this.state.move(Field.TYPE.O, bestMove.index);
 
             this._updateLocalStorage();
+            this._currentPlayer = Field.TYPE.X;
 
             if(this._isWinningPosition(Field.TYPE.O)) {
                 this._isGameInactive = true;
